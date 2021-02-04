@@ -18,11 +18,6 @@
       "type": "git",
       "url": "git+https://github.com/jmasaviru/Employee-Tracker"
     },
-    "keywords": [
-      "node",
-      "sql",
-      "inquirer"
-    ],
     "license": "ISC",
     "bugs": {
       "url": "https://github.com/jmasaviru/Employee-Tracker/blob/main"
