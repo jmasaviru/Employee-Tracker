@@ -1,6 +1,5 @@
 const util = require("util");
 const mysql = require("mysql");
-const { createConnection } = require("net");
 
 // Create connection
 const connection = mysql.createConnection({
