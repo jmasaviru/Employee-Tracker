@@ -1,4 +1,5 @@
 const connection = require("./connection");
+require(console.table)
 
 class DB {
     // Keeping a reference to the connection on the class in case we need it later
@@ -23,7 +24,7 @@ class DB {
 
     //Create a new employee
     createEmployee(employee) {
-        return this.connection.query("INSERT INTO employee SET ?". employee);
+        return this.connection.query("INSERT INTO employee SET ?", employee);
     }
 
     // Remove an employee with the given id
@@ -53,7 +54,7 @@ class DB {
     // Find all roles, join with departments to display the department name
     findAllRoles() {
         return this.connection.query(
-            "SELECT role.id, role.title, department.name AS department, role.salary FROM role LEFT JOIN department on role.department on role.department"
+            "SELECT role.id, role.title, department.name AS department, role.salary FROM role LEFT JOIN department on role.department_id = department.id;"
         );
     }
 
@@ -87,14 +88,14 @@ class DB {
     // Find all employees in a given department, join with roles to display role titles
     findAllEmployeesByDepartment(departmentId) {
         return this.connection.query(
-            "SELECT employee.id, employee.first_name, employee.last_name, role.title FROM employee LEFT JOIN role on employee.role_id = role_id LEFT JOIN departmenton role.department_id = department.id GROUP BY department.id,department.name;"
+            "SELECT employee.id, employee.first_name, employee.last_name, role.title FROM employee LEFT JOIN role on employee.role_id = role_id LEFT JOIN departmenton role.department_id = department.id GROUP BY department.id,department.name;",
             departmentId
         );
     }
     // Find all employees by manager, join with departments and roles to display titles and department names
     findAllEmployeesByManager(managerId) {
         return this.connection.query(
-            "SELECT employee.id, employee.first_name, employee.last_name, department.name AS department, role.title FROM employee LEFT JOIN          
+            "SELECT employee.id, employee.first_name, employee.last_name, department.name AS department, role.title FROM employee LEFT JOIN",         
             managerId
         );
     }
