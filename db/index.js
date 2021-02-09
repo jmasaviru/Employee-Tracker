@@ -22,7 +22,7 @@ class DB {
         );
     }
 
-    //Create a new employee
+    // Create a new employee
     createEmployee(employee) {
         return this.connection.query("INSERT INTO employee SET ?", employee);
     }
@@ -81,7 +81,7 @@ class DB {
     }
 
     // Remove a department
-    removeDepartment (departmentId) {
+    removeDepartment(departmentId) {
         return this.connection.query("DELETE FROM department WHERE id = ?", departmentId);
     }
 
