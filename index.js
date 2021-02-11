@@ -251,23 +251,23 @@ async function removeEmployee() {
         name: `${first_name} ${last_name}`,
         value: id
     }));
-// Select the employeeId to delete from database
-const { employeeId } = await inquirer.prompt([
-    {
-        type: "list",
-        name: "employeeId",
-        message: "Which employee would you like to remove?",
-        choices: chooseEmployee
-    }
-]);
-// Parsing the employeeId to the removeEmployee function
-await db.removeEmployee(employeeId);
+    // Select the employeeId to delete from database
+    const { employeeId } = await inquirer.prompt([
+        {
+            type: "list",
+            name: "employeeId",
+            message: "Which employee would you like to remove?",
+            choices: chooseEmployee
+        }
+    ]);
+    // Parsing the employeeId to the removeEmployee function
+    await db.removeEmployee(employeeId);
 
-// Notification that employee was deleted from database
-console.log("Employee removed successfully!");
-// function call to display menu again
-loadMainPrompts();
-}
+    // Notification that employee was deleted from database
+    console.log("Employee removed successfully!");
+    // function call to display menu again
+    loadMainPrompts();
+    }
 // Function to update data for the current employee role
 async function updateEmployeeRole() {
     const employees = await db.findAllEmployees();
@@ -307,7 +307,7 @@ async function updateEmployeeRole() {
  
      // function call to display menu again
      loadMainPrompts();
- }
+    }
 
  // Function for updating an employee's Manager
  async function updateEmployeeManager(){
@@ -352,8 +352,8 @@ async function updateEmployeeRole() {
      loadMainPrompts();
  }
  
-    // Function to display departments
-    async function viewDepartments() {
+// Function to display departments
+async function viewDepartments() {
     // call findDepartments function from db
     const departments = await db.findDepartments();
     console.log("\n");
@@ -379,8 +379,8 @@ async function updateEmployeeRole() {
     loadMainPrompts();
     }
 
-    // Function to delete an existing department
-    async function removeDepartment() {
+// Function to delete an existing department
+async function removeDepartment() {
     const departments = await db.findAllDepartments();
 
     // Select department
@@ -406,20 +406,81 @@ async function updateEmployeeRole() {
     loadMainPrompts();
 }
  
-    // Function to display roles
-    async function viewRoles() {
-        // call the viewRoles from db
-        const roles = await db.findRoles();
-        console.log("\n");
-        // present the data in tabular way
-        console.table(roles);
-        // function call to display menu again
-        displayMainPrompts();
-    }
+// Function to display roles
+async function viewRoles() {
+    // call the viewRoles from db
+    const roles = await db.findAllRoles();
+    console.log("\n");
+    // Tabulate
+    console.table(roles);
+    // function to display menu again
+    loadMainPrompts();
+}
 
+// Function to add a new role in the database
+async function addRole() {
+    const departments = await db.findAllDepartments();
 
+    // Choose department
+    const chooseDepartment = departments.map(({ id, name }) =>({
+        name: name,
+        value: id
+    }));
 
+    // Get role from user
+    const newRole = await inquirer.prompt([
+        {
+            name: "title",
+            message: "What is the title of the role?"
+        },
+        {
+            name: "salary",
+            message: "What is the role's salary?"
+        },
+        {
+            type: "list",
+            name: "department_id",
+            message: "Which department is this role in?",
+            choices: chooseDepartment
+        }
+    ]);
 
+    await db.createNewRole(newRole);
+    // Notification of the new entry
+    console.log(`${newRole.title} has been added to the database!`);
+    // function call to display menu again
+    loadMainPrompts();
+}
 
+// Function to delete an existing role from the database
+async function removeRole() {
+    const roles = await db.findAllRoles();
+    // choose role
+    const chooseRole = roles.map(({ id, title }) => ({
+        name: title,
+        value: id
+    }));
 
- }
+    // choose role that will be deleted
+    const { roleId } = await inquirer.prompt([
+        {
+            type: "list",
+            name: "roleId",
+            message: "Which role would you like to remove alongside the employees working in that role?",
+            choices: chooseRole
+        }
+    ]);
+    // Parse the role id to the function removeRole
+    await db.removeRole(roleId);
+    // Notification that the role has been removed
+    console.log("Role has been deleted from database successfully!");
+    // function call to display menu again
+    loadMainPrompts();
+}
+
+// Function to exit the program
+function quit() {
+    const logoTxt = logo({ name: "GoodBye!" }).render();
+    console.log(logoTxt);
+    process.exit();
+}
