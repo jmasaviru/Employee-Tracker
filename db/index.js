@@ -13,7 +13,7 @@ class DB {
         );
     }
 
-    // Find all Employees except the given employee id
+    // Find all Employees who are managers
     findAllPossibleManagers(employeeId) {
         return this.connection.query(
             "SELECT id, first_name, last_name FROM employee WHERE id !=?",
@@ -53,7 +53,7 @@ class DB {
     // Find all roles, join with departments to display the department name
     findAllRoles() {
         return this.connection.query(
-            "SELECT role.id, role.title, department.name AS department, role.salary FROM role LEFT JOIN department on role.department_id = department.id;"
+            "SELECT  * from role;"
         );
     }
 
