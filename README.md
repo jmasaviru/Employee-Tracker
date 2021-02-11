@@ -26,7 +26,7 @@ So that I can organize and plan my business
   The user can also run the application locally by first installing the application by cloning the repository onto their machine by running the `git clone` command, and then run `npm install` to install the required dependencies. The user should then navigate on the terminal to the folder where it is contained then run `node server.js`. 
   
 
-  ![Saved Employee-Tracker Screenshot](/public/assets/images/employee-tracker.gif)
+  ![Saved Employee-Tracker Screenshot](public\assets\images\employee-tracker1.png)
 
   >The employees above have been generated with the corresponding user input. They can be saved or deleted. 
 
@@ -54,7 +54,7 @@ So that I can organize and plan my business
 
 ## Links
 
-* Video link for demonstration : https://drive.google.com/file/d/1qVkyweJpwiIRq0FnK3O1J-GjjH7RuC3b/view
+* Video link for demonstration : https://drive.google.com/file/d/1q6W1xg8UlFka7uLrGwnl41UfBq0HSlUm/view
 
 * Employee-Tracker GitHub repository URL: https://github.com/jmasaviru/Employee-Tracker
 
