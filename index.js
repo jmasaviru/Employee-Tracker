@@ -82,7 +82,7 @@ async function loadMainPrompts() {
         }
     ]);
     // Case depending on user input
-    switch (userInput) {
+    switch (choice) {
         case "viewAllEmployees":
             return viewEmployees();
         case "viewAllEmployeesByDepartment":
