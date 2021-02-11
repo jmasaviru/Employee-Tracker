@@ -345,7 +345,7 @@ async function updateEmployeeRole() {
     ]);
 
      // Parse managerId and employeeID to the updateManager
-     await db.updateManager(employeeId, managerId);
+     await db.updateEmployeeManager(employeeId, managerId);
      // Notification that the manager was updated
      console.log("Employee's manager was updated successfully!");
      // function call to display menu again
@@ -445,7 +445,7 @@ async function addRole() {
         }
     ]);
 
-    await db.createNewRole(newRole);
+    await db.createRole(newRole);
     // Notification of the new entry
     console.log(`${newRole.title} has been added to the database!`);
     // function call to display menu again
