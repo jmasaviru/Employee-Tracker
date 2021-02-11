@@ -239,7 +239,7 @@ async function addEmployee() {
 
       // Calling the createEmployee function
     await db.createEmployee(newEmployee);
-    console.log(`${newEmployee.first_name} ${newEmployee.last_name} has been added to the database`);
+    console.log(`${newEmployee.first_name} ${newEmployee.last_name} has been added to the database!`);
     loadMainPrompts();
 }
 
@@ -355,7 +355,7 @@ async function updateEmployeeRole() {
 // Function to display departments
 async function viewDepartments() {
     // call findDepartments function from db
-    const departments = await db.findDepartments();
+    const departments = await db.findAllDepartments();
     console.log("\n");
     // present data in tabular way
     console.table(departments);
