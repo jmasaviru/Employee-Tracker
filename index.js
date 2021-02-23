@@ -204,68 +204,50 @@ var connection = mysql.createConnection({
     })
   };
 
-// Function to add a new employee in the database
-async function addEmployee() {
-    const roles = await db.findAllRoles();
-    const employees = await db.findAllEmployees();
-
-    // User input for the new employee's names
-    const newEmployee = await inquirer.prompt([
+// Function to add a New Employee
+function addEmployee() {
+    let addNew = `SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, role.title, department.name,
+    role.salary, employee.manager_id 
+    FROM employee
+    INNER JOIN role on role.id = employee.role_id
+    INNER JOIN department ON department.id = role.department_id`
+    connection.query(addNew, (err, results) => {
+      if (err) throw err;
+      inquirer.prompt([
         {
-            name: "first_name",
-            message: "What is the employee's first name? "
-        },
-        {
-            name: "last_name",
-            message: "What is the employee's last name? "
-        }
-    ]);
-
-    // The role of the new employee
-    const chooseRole = roles.map(({ id, title }) => ({
-        name: title,
-        value: id
-    }));
-
-    // Getting the roleId from prompt
-    const { roleId } = await inquirer.prompt([
-        {
-            type: "list",
-            name: "roleId",
-            message: "What is the new Employee's role?",
-            choices: chooseRole
-        }
-    ]);
-
-    // Assigning the roleId to the employee.role_id
-    newEmployee.role_id = roleId;
-
-    // Assigning the manager to the new employee
-    const chooseManager = employees.map(({ id, first_name, last_name }) => ({
-        name: `${first_name} ${last_name}`,
-        value: id
-    }));
-
-    chooseManager.unshift({ name: "None", value: null });
-
-    // Getting the manager of the new employee
-    const { managerId } = await inquirer.prompt([
-        {
-            type: "list",
-            name: "managerId",
-            message: "Who is the manager of the new employee? ",
-            choices: chooseManager
-        }
-    ]);
-
-     // Assigning the managerId to the employee
-     newEmployee.manager_id = managerId;
-
-      // Calling the createEmployee function
-    await db.createEmployee(newEmployee);
-    console.log(`${newEmployee.first_name} ${newEmployee.last_name} has been added to the database!`);
-    loadMainPrompts();
-}
+          type: "input",
+          name: "first_name",
+          message: "Please enter employee first name"
+        }, {
+          type: "input",
+          name: "last_name",
+          message: "Please enter employee last name"
+        }, {
+          type: "list",
+          name: "role",
+          message: "Please select employee title",
+          choices: results.map(role => {
+            return { name: role.title, value: role.role_id }
+          })
+        }, {
+          type: "input",
+          name: "manager",
+          message: "Please enter employee manager id"
+        }])
+        .then(answer => {
+          console.log(answer);
+          connection.query(
+            "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)",
+            [answer.first_name, answer.last_name, answer.role, answer.manager],
+            function (err) {
+              if (err) throw err
+              console.log(`${answer.first_name} ${answer.last_name} added as a new employee`)
+              init();
+            })
+          })
+        })
+      };
+      
 
 // Function to delete an Employee from the database
 async function removeEmployee() {
