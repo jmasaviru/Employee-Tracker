@@ -296,48 +296,74 @@ function addEmployee() {
     })
   };
       
-
-
-// Function to update data for the current employee role
-async function updateEmployeeRole() {
-    const employees = await db.findAllEmployees();
-    // Select employee
-    const chooseEmployee = employees.map(({ id, first_name, last_name }) => ({
-        name: `${first_name} ${last_name}`,
-        value: id
-    }));
-    // Select the employeeId that will have it's role updated
-    const { employeeId } = await inquirer.prompt([
-        {
-            type: "list",
-            name: "employeeId",
-            message: "Which employee's role would you like to update?",
-            choices: chooseEmployee
+// Function to Update Employee Role
+function updateEmployeeRole() {
+    let update = ("SELECT * FROM employee");
+    
+    connection.query(update, (err, response) => {
+      
+      const employees = response.map((element) => {
+        return {
+          name: `${element.first_name} ${element.last_name}`,
+          value: element.id
         }
-    ]);
-     // Find all roles & choose role
-     const roles = await db.findAllRoles();
-     const chooseRole = roles.map(({ id, title }) => ({
-         name: title,
-         value: id
-     }));
-     // choose roleId that the employee will get assigned with
-    const { roleId } = await inquirer.prompt([
-        {
+      });
+      inquirer.prompt([{
+        type: "list",
+        name: "employeeId",
+        message: "Which employees role do you want to update",
+        choices: employees
+      }])
+      .then(current => {
+        connection.query("SELECT * FROM role", (err, data) => {
+          
+          const roles = data.map((role) => {
+            return {
+              name: role.title,
+              value: role.id
+            }
+          });
+          
+          inquirer.prompt([{
             type: "list",
             name: "roleId",
-            message: "Which role will be assigned to the employee?",
-            choices: chooseRole
-        }
-    ]);
-     // Parse roleId and employeeId to updateRole
-     await db.updateEmployeeRole(employeeId, roleId);
-     // Notification that employee's role was updated
-     console.log("Employee's role has been updated successfully!");
- 
-     // function call to display menu again
-     loadMainPrompts();
-    }
+            message: "What's the new role",
+            choices: roles
+          }])
+          .then(updated => {
+            const update = `UPDATE employee
+            SET employee.role_id = ? 
+            WHERE employee.id = ?`
+            connection.query(update, [updated.roleId, current.employeeId], (err, res) => {
+              var newPosition;
+              
+              // will return the updated role
+              for (var i = 0; i < roles.length; i++) {
+                if (roles[i].value == updated.roleId) {
+                  newPosition = roles[i].name;
+                }
+              }
+              // will return the employee
+              var employeeName;
+              for (var j = 0; j < employees.length; j++) {
+                if (employees[j].value == current.employeeId) {
+                  employeeName = employees[j].name;
+                }
+              }
+              
+              if (res.changedRows === 1) {
+                console.log(`Successfully updated ${employeeName} to position of ${newPosition}`);
+              } else {
+                console.log(`Error: ${employeeName}'s current position is ${newPosition}`)
+              }
+              init();
+            })
+          })
+        })
+      })
+    })
+  };
+  
 
  // Function for updating an employee's Manager
  async function updateEmployeeManager(){
