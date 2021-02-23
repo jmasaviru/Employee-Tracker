@@ -5,6 +5,20 @@ var inquirer = require("inquirer");
 var consoleTable = require("console.table");
 var { response } = require("express");
 
+var connection = mysql.createConnection({
+    host: "localhost",
+    port: 3306,
+    user: "root",
+    password: "Ma$terviru6",
+    database: "Employees"
+  });
+  
+  connection.connect((err) => {
+    if (err) throw err;
+    console.log("Connected as id " + connection.threadId);
+    init();
+  });
+
 
 init();
 
