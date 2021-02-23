@@ -19,116 +19,91 @@ var connection = mysql.createConnection({
     init();
   });
 
-
-init();
-
-// Display logo text, load main prompts
-function init() {
+  // Function to initialize application
+  // Display logo text
     const logoText = logo({ name: "Employee Manager" }).render();
-
     console.log(logoText);
 
-    loadMainPrompts();
-}
-// Display main prompts
-async function loadMainPrompts() {
-    const { choice } = await inquirer.prompt([
-        {
-            type: "list",
-            name: "choice",
-            message: "What would you like to do?",
-            choices: [
-                {
-                    name: "View All Employees",
-                    value: "viewAllEmployees"
-                },
-                {
-                    name: "View All Employees By Department",
-                    value: "viewAllEmployeesByDepartment"
-                },
-                {
-                    name: "View All Employees By Manager",
-                    value: "viewAllEmployeesByManager"
-                },
-                {
-                    name: "Add Employee",
-                    value: "addEmployee"
-                },
-                {
-                    name: "Remove Employee",
-                    value: "removeEmployee"
-                },
-                {
-                    name: "Update Employee Role",
-                    value: "updateEmployeeRole"
-                },
-                {
-                    name: "Update Employee Manager",
-                    value: "updateEmployeeManager"
-                },
-                {
-                    name: "View All Roles",
-                    value: "viewAllRoles"
-                },
-                {
-                    name: "Add Role",
-                    value: "addRole"
-                },
-                {
-                    name: "Remove Role",
-                    value: "removeRole"
-                },
-                {
-                    name: "View All Departments",
-                    value: "viewAllDepartments"
-                },
-                {
-                    name: "Add Department",
-                    value: "addDepartment"
-                },
-                {
-                    name: "Remove Department",
-                    value: "removeDepartment"
-                },
-                {
-                    name: "Quit",
-                    value: "quit"
-                }
-            ]
-        }
-    ]);
-    // Case depending on user input
-    switch (choice) {
-        case "viewAllEmployees":
-            return viewEmployees();
-        case "viewAllEmployeesByDepartment":
-            return viewEmployeesByDepartment();
-        case "viewAllEmployeesByManager":
-            return viewEmployeesByManager();
-        case "addEmployee":
-            return addEmployee();
-        case "removeEmployee":
-            return removeEmployee();
-        case "updateEmployeeRole":
-            return updateEmployeeRole();
-        case "updateEmployeeManager":
-            return updateEmployeeManager();
-        case "viewAllRoles":
-            return viewRoles();
-        case "addRole":
-            return addRole();
-        case "removeRole":
-            return removeRole();
-        case "viewAllDepartments":
-            return viewDepartments();
-        case "addDepartment":
-            return addDepartment();
-        case "removeDepartment":
-            return removeDepartment();
-        default:
-            return quit();
-    }
-}
+    function init() {
+
+        // Display main prompts
+  inquirer.prompt({
+    type: "list",
+    name: "start",
+    message: "What would you like to do?",
+    choices: [
+      "View All Employees", 
+      "View All Departments", 
+      "View All Roles", 
+      "View All Employees By Department", 
+      "View All Employees By Manager",
+      "Add Employee", 
+      "Remove Employee", 
+      "Update Employee Role", 
+      "Add Employee Role", 
+      "Remove Role", 
+      "Add New Department", 
+      "Remove Department"
+    ]
+  })
+  
+  // Case depending on user input
+  .then((response) => {
+    switch (response.start) {
+      case "View All Employees":
+        viewEmployees();
+        break;
+
+      case "View All Departments":
+        viewDepartments();
+        break;
+
+      case "View All Roles":
+        viewRoles();
+        break;
+
+      case "View All Employees By Department":
+        viewEmployeesByDepartment();
+        break;
+
+      case "View All Employees By Manager":
+        viewEmployeesByManager();
+        break;
+
+      case "Add Employee":
+        addEmployee();
+        break;
+
+      case "Remove Employee":
+        removeEmployee();
+        break;
+
+      case "Update Employee Role":
+        updateEmployeeRole();
+        break;
+
+      case "Add Employee Role":
+        addRole();
+        break;
+
+      case "Remove Role":
+        removeRole();
+        break;
+
+      case "Add New Department":
+        addDepartment();
+        break;
+
+      case "Remove Department":
+        removeDept();
+        break;
+
+      case "Update Employee Manager":
+        updateEmpManager();
+        break;
+      }
+    })
+  };
 // Function to display all employees
 async function viewEmployees() {
     // Calling the findAllEmployees function from the db
