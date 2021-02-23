@@ -104,15 +104,22 @@ var connection = mysql.createConnection({
       }
     })
   };
-// Function to display all employees
-async function viewEmployees() {
-    // Calling the findAllEmployees function from the db
-    const employees = await db.findAllEmployees();
-    console.log("\n");
-    console.table(employees);
-    // Calling the function to display prompts
-    loadMainPrompts();
-}
+  
+  // Function to view ALL Employees
+  function viewEmployees() {
+    const employees = `SELECT employee.id, employee.first_name, employee.last_name, role.title AS role, 
+    CONCAT(manager.first_name,' ',manager.last_name) AS manager, department.name
+    FROM employee 
+    LEFT JOIN role ON employee.role_id = role.id 
+    LEFT JOIN department ON role.department_id = department.id 
+    LEFT JOIN employee manager ON  employee.manager_id = manager.id`
+    
+    connection.query(employees, (err, data) => {
+      if (err) throw err;
+      console.table(data);
+      init();
+    })
+  };
 // Function to display all employees by department
 async function viewEmployeesByDepartment() {
     const departments = await db.findAllDepartments();
