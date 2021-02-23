@@ -423,136 +423,27 @@ function updateEmployeeRole() {
         })
       })
     };
- 
-// Function to display departments
-async function viewDepartments() {
-    // call findDepartments function from db
-    const departments = await db.findAllDepartments();
-    console.log("\n");
-    // present data in tabular way
-    console.table(departments);
-    // function call to display menu again
-    loadMainPrompts()
-    }
-    // Function adds new department to database
-    async function addDepartment() {
-    // get department from prompt
-    const department = await inquirer.prompt([
-        {
-            name: "name",
-            message: "What is the name of the department?"
-        }
-    ]);
-    // Parse the department to function
-    await db.createDepartment(department);
-    // Notification for the new Entry
-    console.log(`${department.name} has been added to the database!`);
-    // function call to display menu again
-    loadMainPrompts();
-    }
 
-// Function to delete an existing department
-async function removeDepartment() {
-    const departments = await db.findAllDepartments();
-
-    // Select department
-    const chooseDepartment = departments.map(({ id, name }) => ({
-        name: name,
-        value: id
-    }));
-
-    // Select departemnt to delete
-    const { departmentId } = await inquirer.prompt([
-    {
-        type: "list",
-        name: "departmentId",
-        message: "Which department would you like to remove, together with existing roles and employees?",
-        choices: chooseDepartment
-    }
-    ]);
-    // Parse departmentId to the deleteDepartment function
-    await db.removeDepartment(departmentId);
-    // Notification that the department was deleted
-    console.log("Department has been deleted successfully!");
-    // function call to display menu again
-    loadMainPrompts();
-}
- 
-// Function to display roles
-async function viewRoles() {
-    // call the viewRoles from db
-    const roles = await db.findAllRoles();
-    console.log("\n");
-    // Tabulate
-    console.table(roles);
-    // function to display menu again
-    loadMainPrompts();
-}
-
-// Function to add a new role in the database
-async function addRole() {
-    const departments = await db.findAllDepartments();
-
-    // Choose department
-    const chooseDepartment = departments.map(({ id, name }) =>({
-        name: name,
-        value: id
-    }));
-
-    // Get role from user
-    const newRole = await inquirer.prompt([
-        {
-            name: "title",
-            message: "What is the title of the role?"
-        },
-        {
-            name: "salary",
-            message: "What is the role's salary?"
-        },
-        {
+    // Function to Remove Department
+    function removeDept() {
+        let dropDept = `SELECT * FROM department`
+        connection.query(dropDept, (err, res) => {
+          if (err) throw err;
+          inquirer.prompt([{
             type: "list",
-            name: "department_id",
-            message: "Which department is this role in?",
-            choices: chooseDepartment
-        }
-    ]);
-
-    await db.createRole(newRole);
-    // Notification of the new entry
-    console.log(`${newRole.title} has been added to the database!`);
-    // function call to display menu again
-    loadMainPrompts();
-}
-
-// Function to delete an existing role from the database
-async function removeRole() {
-    const roles = await db.findAllRoles();
-    // choose role
-    const chooseRole = roles.map(({ id, title }) => ({
-        name: title,
-        value: id
-    }));
-
-    // choose role that will be deleted
-    const { roleId } = await inquirer.prompt([
-        {
-            type: "list",
-            name: "roleId",
-            message: "Which role would you like to remove alongside the employees working in that role?",
-            choices: chooseRole
-        }
-    ]);
-    // Parse the role id to the function removeRole
-    await db.removeRole(roleId);
-    // Notification that the role has been removed
-    console.log("Role has been deleted from database successfully!");
-    // function call to display menu again
-    loadMainPrompts();
-}
-
-// Function to exit the program
-function quit() {
-    const logoTxt = logo({ name: "GoodBye!" }).render();
-    console.log(logoTxt);
-    process.exit();
-}
+            name: "deptId",
+            message: "Please select a department to remove",
+            choices: res.map(departments => {
+              return { name: `${departments.name}`, value: departments.id }
+            })
+          }])
+          .then(answer => {
+            let dropDept = `DELETE FROM department WHERE ?`
+            connection.query(dropDept, [{ id: answer.deptId }], (err) => {
+              if (err) throw err;
+              console.log("Department removed")
+              init();
+            })
+          })
+        })
+      };
