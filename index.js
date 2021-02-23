@@ -365,48 +365,64 @@ function updateEmployeeRole() {
   };
   
 
- // Function for updating an employee's Manager
- async function updateEmployeeManager(){
-     const employees = await db.findAllEmployees();
-     const chooseEmployee = employees.map(({ id, first_name, last_name }) => ({
-        name: `${first_name} ${last_name}`,
-        value: id
-    }));
-
-    // Chose employee to be updated
-    const { employeeId } = await inquirer.prompt([
+ // Function to add a New Role
+ function addRole() {
+    let newRole = `SELECT * FROM role`
+    connection.query(newRole, (err, data) => {
+      if (err) throw err
+      inquirer.prompt([
         {
-            type: "list",
-            name: "employeeId",
-            message: "Which employee's manager would you like to update?",
-            choices: chooseEmployee
-        }
-    ]);
-
-    // Select Manager
-    const managers = await db.findAllEmployeesByManager(employeeId);
-    const chooseManager = managers.map(({ id, first_name, last_name}) =>({
-        name: `${first_name} ${last_name}`,
-        value: id
-    }));
-
-    // Select managerId to be updated
-    const { managerId } = await inquirer.prompt([
-        {
-            type: "list",
-            name: "managerId",
-            message: "Which employee would you like to set as manager?",
-            choices: chooseManager
-        }
-    ]);
-
-     // Parse managerId and employeeID to the updateManager
-     await db.updateEmployeeManager(employeeId, managerId);
-     // Notification that the manager was updated
-     console.log("Employee's manager was updated successfully!");
-     // function call to display menu again
-     loadMainPrompts();
- }
+          type: "input",
+          name: "roleId",
+          message: "Please enter id for new role"
+        }, {
+          type: "input",
+          name: "role",
+          message: "Please enter title of new role"
+        }, {
+          type: "input",
+          name: "salary",
+          message: "Please enter salary for new role"
+        }, {
+          type: "input",
+          name: "deptId",
+          message: "Please enter department id for new role"
+        }])
+        .then((answers) => {
+          let roleValues = `INSERT INTO role VALUES (?,?,?,?)`
+          connection.query(roleValues, [answers.roleId, answers.role, answers.salary, answers.deptId], (err) => {
+            if (err) throw err;
+            console.log(`${answers.role} added as new role`)
+            init();
+          })
+        })
+      })
+    }
+    
+    // Function to add New Department
+    function addDepartment() {
+      let newDepartment = `SELECT * FROM department`
+      connection.query(newDepartment, (err, res) => {
+        if (err) throw err
+        inquirer.prompt([{
+          type: "input",
+          name: "deptId",
+          message: "Please enter id for new department"
+        }, {
+          type: "input",
+          name: "deptName",
+          message: "Please enter name for new department"
+        }])
+        .then(answers => {
+          let deptValues = `INSERT INTO department VALUES (?,?)`
+          connection.query(deptValues, [answers.deptId, answers.deptName], (err) => {
+            if (err) throw err
+            console.log(`${answers.deptName} added as a new department`)
+            init();
+          })
+        })
+      })
+    };
  
 // Function to display departments
 async function viewDepartments() {
