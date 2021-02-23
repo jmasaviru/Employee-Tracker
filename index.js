@@ -120,30 +120,27 @@ var connection = mysql.createConnection({
       init();
     })
   };
-// Function to display all employees by department
-async function viewEmployeesByDepartment() {
-    const departments = await db.findAllDepartments();
 
-    // Select department
-    const chooseDepartment = departments.map(({ id, name }) => ({
-        name: name,
-        value: id
-    }));
-     const { departmentId } = await inquirer.prompt([
-        {
-            type: "list",
-            name: "departmentId",
-            message: "Which department's employees would you like to view? ",
-            choices: chooseDepartment
-        }
-    ]);
-     // Calling the findAllEmloyeesByDepartment function from db
-     const employees = await db.findAllEmployeesByDepartment(departmentId);
-     console.log("\n");
-     console.table(employees);
-     // Display the prompts 
-     loadMainPrompts();
-}
+// Function to view ALL Departments
+  function viewDepartments() {
+    const departments = `SELECT * FROM department`
+    connection.query(departments, (err, data) => {
+      if (err) throw err;
+      console.table(data);
+      init();
+    })
+  };
+
+  // Function to view ALL Roles
+  function viewRoles() {
+    const roles = `SELECT * FROM role`
+    connection.query(roles, (err, data) => {
+      if (err) throw err;
+      console.table(data);
+      init();
+    })
+  };
+  
 // Function to display the employees by manager
 async function viewEmployeesByManager() {
     const managers = await db.findAllEmployees();
