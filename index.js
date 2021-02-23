@@ -171,18 +171,38 @@ var connection = mysql.createConnection({
         })
     };
 
-    // Parse the managerId to the findAllEmployeesByManager function 
-    const employees = await db.findAllEmployeesByManager(managerId);
-    console.log("\n");
-
-     // Check if the employee has reports
-     if (employees.length === 0) {
-        console.log("The employee selected has no reports!");
-    } else {
-        console.table(employees);
-    }
-    loadMainPrompts();
-}
+    // Function to view Employees by Manager
+  function viewEmployeesByManager() {
+    let employees = `SELECT * FROM employee e WHERE e.manager_id IS NULL`
+    connection.query(employees, (err, res) => {
+      if (err) throw err;
+      const managers = res.map((element) => {
+        return {
+          name: `${element.first_name} ${element.last_name}`,
+          value: element.id
+        }
+      });
+      inquirer.prompt([{
+        type: "list",
+        name: "byManager",
+        message: "Please select manager to view employees",
+        choices: managers
+      }])
+      .then(response => {
+        console.log(response.byManager)
+        let manager = `SELECT employee.id, employee.first_name, employee.last_name, employee.role_id AS role, CONCAT(manager.first_name, ' ', manager.last_name) as manager, department.name AS department FROM employee
+        LEFT JOIN role on employee.role_id = role.id
+        LEFT JOIN department on department.id = role.department_id
+        LEFT JOIN employee manager on employee.manager_id = manager.id
+        WHERE employee.manager_id = ?`
+        connection.query(manager, [response.byManager], (err, data) => {
+          if (err) throw err;
+          console.table(data);
+          init()
+        })
+      })
+    })
+  };
 
 // Function to add a new employee in the database
 async function addEmployee() {
