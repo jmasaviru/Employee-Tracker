@@ -247,33 +247,57 @@ function addEmployee() {
           })
         })
       };
+
+       // Function to Remove Employee
+  function removeEmployee() {
+    let terminate = `SELECT * FROM employee`
+    connection.query(terminate, (err, res) => {
+      if (err) throw err;
+      inquirer.prompt([{
+        type: "list",
+        name: "employeeId",
+        message: "Please select employee to remove",
+        choices: res.map(employee => {
+          return { name: `${employee.first_name} ${employee.last_name}`, value: employee.id }
+        })
+      }])
+      .then(answer => {
+        let terminate = `DELETE FROM employee WHERE ?`
+        connection.query(terminate, [{ id: answer.employeeId }], (err) => {
+          if (err) throw err;
+          console.log("Employee removed");
+          init();
+        })
+      })
+    })
+  };
+  
+  // Function to Remove Role
+  function removeRole() {
+    let downsize = `SELECT * FROM role`
+    connection.query(downsize, (err, res) => {
+      if (err) throw err;
+      inquirer.prompt([{
+        type: "list",
+        name: "roleId",
+        message: "Please select role to remove",
+        choices: res.map(roles => {
+          return { name: `${roles.title}`, value: roles.id }
+        })
+      }])
+      .then(answer => {
+        let downsize = `DELETE FROM role WHERE ?`
+        connection.query(downsize, [{ id: answer.roleId }], (err) => {
+          if (err) throw err;
+          console.log("Role removed");
+          init();
+        })
+      })
+    })
+  };
       
 
-// Function to delete an Employee from the database
-async function removeEmployee() {
-    const employees = await db.findAllEmployees();
-    // Select employee
-    const chooseEmployee = employees.map(({ id, first_name, last_name }) => ({
-        name: `${first_name} ${last_name}`,
-        value: id
-    }));
-    // Select the employeeId to delete from database
-    const { employeeId } = await inquirer.prompt([
-        {
-            type: "list",
-            name: "employeeId",
-            message: "Which employee would you like to remove?",
-            choices: chooseEmployee
-        }
-    ]);
-    // Parsing the employeeId to the removeEmployee function
-    await db.removeEmployee(employeeId);
 
-    // Notification that employee was deleted from database
-    console.log("Employee removed successfully!");
-    // function call to display menu again
-    loadMainPrompts();
-    }
 // Function to update data for the current employee role
 async function updateEmployeeRole() {
     const employees = await db.findAllEmployees();
