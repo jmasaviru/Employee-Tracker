@@ -141,26 +141,35 @@ var connection = mysql.createConnection({
     })
   };
   
-// Function to display the employees by manager
-async function viewEmployeesByManager() {
-    const managers = await db.findAllEmployees();
-
-    // Select manager
-
-    const chooseManager = managers.map(({ id, first_name, last_name }) => ({
-        name: `${first_name} ${last_name}`,
-        value: id
-    }));
-
-    // user prompt choices
-    const { managerId } = await inquirer.prompt([
-        {
+    // Function to view Employees by Department
+    function viewEmployeesByDepartment() {
+        const department = ("SELECT * FROM department");
+        
+        connection.query(department, (err, response) => {
+        if (err) throw err;
+        const departments = response.map(element => {
+            return { name: `${element.name}` }
+        });
+        
+        inquirer.prompt([{
             type: "list",
-            name: "managerId",
-            message: "Which employee's report would you like to see?",
-            choices: chooseManager
-        }
-    ]);
+            name: "dept",
+            message: "Please select a department to view employees",
+            choices: departments
+        
+        }]).then(answer => {
+            const department = `SELECT employee.first_name, employee.last_name, employee.role_id AS role, CONCAT(manager.first_name,' ',manager.last_name) AS manager, department.name as department 
+            FROM employee LEFT JOIN role on employee.role_id = role.id 
+            LEFT JOIN department ON role.department_id =department.id LEFT JOIN employee manager ON employee.manager_id=manager.id
+            WHERE ?`
+            connection.query(department, [{ name: answer.dept }], function (err, res) {
+            if (err) throw err;
+            console.table(res)
+            init();
+            })
+        })
+        })
+    };
 
     // Parse the managerId to the findAllEmployeesByManager function 
     const employees = await db.findAllEmployeesByManager(managerId);
