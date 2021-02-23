@@ -101,9 +101,12 @@ function init() {
       case "Update Employee Manager":
         updateEmpManager();
         break;
-      }
-    })
-  };
+        
+      default:
+        return quit();
+    }
+})
+};
   
   // Function to view ALL Employees
   function viewEmployees() {
@@ -446,3 +449,10 @@ function init() {
         })
       })
     };
+    
+    // Function to exit the program
+    function quit() {
+    const logoTxt = logo({ name: "GoodBye!" }).render();
+    console.log(logoTxt);
+    process.exit();
+}
