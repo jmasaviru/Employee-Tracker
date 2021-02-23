@@ -1,7 +1,9 @@
-const inquirer = require("inquirer");
-const logo = require("asciiart-logo");
-const db = require("./db");
-const consoleTable = require("console.table");
+var mysql = require("mysql");
+var logo = require("asciiart-logo");
+var express = require("express");
+var inquirer = require("inquirer");
+var consoleTable = require("console.table");
+var { response } = require("express");
 
 
 init();
