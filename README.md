@@ -23,7 +23,7 @@ So that I can organize and plan my business
   * Node
   
   ## Usage
-  The user can also run the application locally by first installing the application by cloning the repository onto their machine by running the `git clone` command, and then run `npm install` to install the required dependencies. The user should then navigate on the terminal to the folder where it is contained then run `node server.js`. 
+  The user can also run the application locally by first installing the application by cloning the repository onto their machine by running the `git clone` command, and then run `npm install` to install the required dependencies. The user should then navigate on the terminal to the folder where it is contained then run `node index.js`. 
   
 
   ![Saved Employee-Tracker Screenshot](/public/assets/images/employee-tracker.gif)
