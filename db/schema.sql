@@ -13,7 +13,7 @@ CREATE TABLE role (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(30) UNIQUE NOT NULL,
     salary DECIMAL(10,4) UNSIGNED NOT NULL,
-    department_id INT UNSIGNED NOT NULL,
+    department_id INT UNSIGNED NOT NULL
 );
 
 CREATE TABLE employee (
@@ -21,5 +21,5 @@ CREATE TABLE employee (
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     role_id INT UNSIGNED NOT NULL,
-    manager_id INT UNSIGNED,
+    manager_id INT UNSIGNED
 );
